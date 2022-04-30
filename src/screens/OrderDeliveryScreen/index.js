@@ -101,7 +101,7 @@ export const OrderDeliveryScreen = () => {
           }
           strokeWidth={6}
           strokeColor="#3FC060"
-          apikey={"AIzaSyBmBxEQgbpLbyBwfNSRuFZjWGo8QMYyGa0"}
+          apikey={process.env.APIKEY}
           onReady={({ duration, distance }) => {
             setTotalMinuets(duration);
             setTotalKm(distance);
