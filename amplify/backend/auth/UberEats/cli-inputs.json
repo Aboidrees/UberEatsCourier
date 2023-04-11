@@ -3,7 +3,7 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "ubereabbab8977",
+    "resourceNameTruncated": "uberea1369e744",
     "userPoolName": "UberEats",
     "autoVerifiedAttributes": [
       "email"
@@ -14,10 +14,10 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "Verification code: {####}",
+    "emailVerificationSubject": "Uber Eats Email Verification",
     "emailVerificationMessage": "Verification code: {####}",
     "defaultPasswordPolicy": false,
-    "passwordPolicyMinLength": 6,
+    "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [],
     "aliasAttributes": [],
@@ -25,9 +25,9 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "UberEabbab8977_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "UberEa1369e744_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "bbab8977",
+    "sharedId": "1369e744",
     "resourceName": "UberEats",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
@@ -41,6 +41,21 @@
     "thirdPartyAuth": false,
     "authProviders": [],
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": [],
+    "hostedUI": false
   }
 }

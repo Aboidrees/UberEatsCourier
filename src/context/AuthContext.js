@@ -10,13 +10,29 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const sub = authUser?.attributes?.sub;
 
-  useEffect(
-    () =>
-      Auth.currentAuthenticatedUser({ bypassCache: true }).then(setAuthUser),
-    []
-  );
+  useEffect(() => {
+
+    Auth.currentAuthenticatedUser({ bypassCache: true })
+      .then(setAuthUser);
+  }, []);
 
   useEffect(() => {
+    if (!sub) return;
+    console.log("couriers");
+    DataStore.query(Courier, (courier) => courier.sub("eq", sub)).then(
+      (couriers) => {
+        setDbCourier(couriers[0]);
+      }
+    );
+
+
+    setLoading(false);
+
+  }, [sub]);
+
+
+  useEffect(() => {
+
     if (!dbCourier) return;
 
     const subscription = DataStore.observe(Courier, dbCourier.id).subscribe(
@@ -24,17 +40,10 @@ export const AuthContextProvider = ({ children }) => {
     );
 
     return () => subscription.unsubscribe();
+
+
   }, [dbCourier]);
 
-  useEffect(() => {
-    if (!sub) return;
-    DataStore.query(Courier, (courier) => courier.sub("eq", sub)).then(
-      (couriers) => {
-        setDbCourier(couriers[0]);
-        setLoading(false);
-      }
-    );
-  }, [sub]);
 
   return (
     <AuthContext.Provider

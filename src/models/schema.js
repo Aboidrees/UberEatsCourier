@@ -1,7 +1,7 @@
 export const schema = {
     "models": {
-        "Courier": {
-            "name": "Courier",
+        "OrderDish": {
+            "name": "OrderDish",
             "fields": {
                 "id": {
                     "name": "id",
@@ -10,40 +10,135 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "name": {
-                    "name": "name",
+                "quantity": {
+                    "name": "quantity",
                     "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "sub": {
-                    "name": "sub",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "latitude": {
-                    "name": "latitude",
-                    "isArray": false,
-                    "type": "Float",
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
-                "longitude": {
-                    "name": "longitude",
+                "orderID": {
+                    "name": "orderID",
                     "isArray": false,
-                    "type": "Float",
-                    "isRequired": false,
+                    "type": "ID",
+                    "isRequired": true,
                     "attributes": []
                 },
-                "transportationMode": {
-                    "name": "transportationMode",
+                "Dish": {
+                    "name": "Dish",
                     "isArray": false,
                     "type": {
-                        "enum": "TransportationModes"
+                        "model": "Dish"
                     },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "orderDishDishId"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "orderDishDishId": {
+                    "name": "orderDishDishId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "OrderDishes",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byOrder",
+                        "fields": [
+                            "orderID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "BasketDish": {
+            "name": "BasketDish",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "Dish": {
+                    "name": "Dish",
+                    "isArray": false,
+                    "type": {
+                        "model": "Dish"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "basketDishDishId"
+                        ]
+                    }
+                },
+                "basketID": {
+                    "name": "basketID",
+                    "isArray": false,
+                    "type": "ID",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -62,14 +157,30 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
+                },
+                "basketDishDishId": {
+                    "name": "basketDishDishId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 }
             },
             "syncable": true,
-            "pluralName": "Couriers",
+            "pluralName": "BasketDishes",
             "attributes": [
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byBasket",
+                        "fields": [
+                            "basketID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -110,7 +221,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "basketID"
+                        "associatedWith": [
+                            "basketID"
+                        ]
                     }
                 },
                 "userID": {
@@ -187,8 +300,8 @@ export const schema = {
                 }
             ]
         },
-        "BasketDish": {
-            "name": "BasketDish",
+        "Order": {
+            "name": "Order",
             "fields": {
                 "id": {
                     "name": "id",
@@ -197,31 +310,190 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "quantity": {
-                    "name": "quantity",
+                "total": {
+                    "name": "total",
                     "isArray": false,
-                    "type": "Int",
+                    "type": "Float",
                     "isRequired": true,
                     "attributes": []
                 },
-                "Dish": {
-                    "name": "Dish",
+                "status": {
+                    "name": "status",
                     "isArray": false,
                     "type": {
-                        "model": "Dish"
+                        "enum": "OrderStatus"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "Courier": {
+                    "name": "Courier",
+                    "isArray": false,
+                    "type": {
+                        "model": "Courier"
                     },
                     "isRequired": false,
                     "attributes": [],
                     "association": {
                         "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "basketDishDishId"
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "orderCourierId"
+                        ]
                     }
                 },
-                "basketID": {
-                    "name": "basketID",
+                "Restaurant": {
+                    "name": "Restaurant",
+                    "isArray": false,
+                    "type": {
+                        "model": "Restaurant"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "orderRestaurantId"
+                        ]
+                    }
+                },
+                "userID": {
+                    "name": "userID",
                     "isArray": false,
                     "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "OrderDishes": {
+                    "name": "OrderDishes",
+                    "isArray": true,
+                    "type": {
+                        "model": "OrderDish"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "orderID"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "orderCourierId": {
+                    "name": "orderCourierId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "orderRestaurantId": {
+                    "name": "orderRestaurantId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Orders",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUser",
+                        "fields": [
+                            "userID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "Courier": {
+            "name": "Courier",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "latitude": {
+                    "name": "latitude",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "longitude": {
+                    "name": "longitude",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "transportationMode": {
+                    "name": "transportationMode",
+                    "isArray": false,
+                    "type": {
+                        "enum": "TransportationModes"
+                    },
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "sub": {
+                    "name": "sub",
+                    "isArray": false,
+                    "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -240,30 +512,140 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
-                },
-                "basketDishDishId": {
-                    "name": "basketDishDishId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
                 }
             },
             "syncable": true,
-            "pluralName": "BasketDishes",
+            "pluralName": "Couriers",
             "attributes": [
                 {
                     "type": "model",
                     "properties": {}
                 },
                 {
-                    "type": "key",
+                    "type": "auth",
                     "properties": {
-                        "name": "byBasket",
-                        "fields": [
-                            "basketID"
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
                         ]
                     }
+                }
+            ]
+        },
+        "User": {
+            "name": "User",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "address": {
+                    "name": "address",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "latitude": {
+                    "name": "latitude",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "longitude": {
+                    "name": "longitude",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "sub": {
+                    "name": "sub",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "avatar": {
+                    "name": "avatar",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "Orders": {
+                    "name": "Orders",
+                    "isArray": true,
+                    "type": {
+                        "model": "Order"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "userID"
+                        ]
+                    }
+                },
+                "Baskets": {
+                    "name": "Baskets",
+                    "isArray": true,
+                    "type": {
+                        "model": "Basket"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "userID"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Users",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
                 },
                 {
                     "type": "auth",
@@ -300,13 +682,6 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "image": {
-                    "name": "image",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
-                    "attributes": []
-                },
                 "description": {
                     "name": "description",
                     "isArray": false,
@@ -320,6 +695,21 @@ export const schema = {
                     "type": "Float",
                     "isRequired": true,
                     "attributes": []
+                },
+                "salePrice": {
+                    "name": "salePrice",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "images": {
+                    "name": "images",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
                 },
                 "restaurantID": {
                     "name": "restaurantID",
@@ -379,357 +769,6 @@ export const schema = {
                 }
             ]
         },
-        "OrderDish": {
-            "name": "OrderDish",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "quantity": {
-                    "name": "quantity",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "Dish": {
-                    "name": "Dish",
-                    "isArray": false,
-                    "type": {
-                        "model": "Dish"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "orderDishDishId"
-                    }
-                },
-                "orderID": {
-                    "name": "orderID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "orderDishDishId": {
-                    "name": "orderDishDishId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "OrderDishes",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byOrder",
-                        "fields": [
-                            "orderID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "User": {
-            "name": "User",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "name": {
-                    "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "address": {
-                    "name": "address",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "latitude": {
-                    "name": "latitude",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "longitude": {
-                    "name": "longitude",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "Orders": {
-                    "name": "Orders",
-                    "isArray": true,
-                    "type": {
-                        "model": "Order"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "userID"
-                    }
-                },
-                "Baskets": {
-                    "name": "Baskets",
-                    "isArray": true,
-                    "type": {
-                        "model": "Basket"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "userID"
-                    }
-                },
-                "sub": {
-                    "name": "sub",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                }
-            },
-            "syncable": true,
-            "pluralName": "Users",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "Order": {
-            "name": "Order",
-            "fields": {
-                "id": {
-                    "name": "id",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "userID": {
-                    "name": "userID",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "Restaurant": {
-                    "name": "Restaurant",
-                    "isArray": false,
-                    "type": {
-                        "model": "Restaurant"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "orderRestaurantId"
-                    }
-                },
-                "total": {
-                    "name": "total",
-                    "isArray": false,
-                    "type": "Float",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "status": {
-                    "name": "status",
-                    "isArray": false,
-                    "type": {
-                        "enum": "OrderStatus"
-                    },
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "OrderDishes": {
-                    "name": "OrderDishes",
-                    "isArray": true,
-                    "type": {
-                        "model": "OrderDish"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "orderID"
-                    }
-                },
-                "Courier": {
-                    "name": "Courier",
-                    "isArray": false,
-                    "type": {
-                        "model": "Courier"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "id",
-                        "targetName": "orderCourierId"
-                    }
-                },
-                "createdAt": {
-                    "name": "createdAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "updatedAt": {
-                    "name": "updatedAt",
-                    "isArray": false,
-                    "type": "AWSDateTime",
-                    "isRequired": false,
-                    "attributes": [],
-                    "isReadOnly": true
-                },
-                "orderRestaurantId": {
-                    "name": "orderRestaurantId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "orderCourierId": {
-                    "name": "orderCourierId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                }
-            },
-            "syncable": true,
-            "pluralName": "Orders",
-            "attributes": [
-                {
-                    "type": "model",
-                    "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byUser",
-                        "fields": [
-                            "userID"
-                        ]
-                    }
-                },
-                {
-                    "type": "auth",
-                    "properties": {
-                        "rules": [
-                            {
-                                "allow": "public",
-                                "operations": [
-                                    "create",
-                                    "update",
-                                    "delete",
-                                    "read"
-                                ]
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
         "Restaurant": {
             "name": "Restaurant",
             "fields": {
@@ -742,13 +781,6 @@ export const schema = {
                 },
                 "name": {
                     "name": "name",
-                    "isArray": false,
-                    "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "image": {
-                    "name": "image",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
@@ -803,6 +835,28 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "adminSub": {
+                    "name": "adminSub",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "icon": {
+                    "name": "icon",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "images": {
+                    "name": "images",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
                 "Dishes": {
                     "name": "Dishes",
                     "isArray": true,
@@ -814,7 +868,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "restaurantID"
+                        "associatedWith": [
+                            "restaurantID"
+                        ]
                     }
                 },
                 "Baskets": {
@@ -828,7 +884,9 @@ export const schema = {
                     "isArrayNullable": true,
                     "association": {
                         "connectionType": "HAS_MANY",
-                        "associatedWith": "restaurantID"
+                        "associatedWith": [
+                            "restaurantID"
+                        ]
                     }
                 },
                 "createdAt": {
@@ -875,13 +933,6 @@ export const schema = {
         }
     },
     "enums": {
-        "TransportationModes": {
-            "name": "TransportationModes",
-            "values": [
-                "DRIVING",
-                "BICYCLING"
-            ]
-        },
         "OrderStatus": {
             "name": "OrderStatus",
             "values": [
@@ -890,10 +941,19 @@ export const schema = {
                 "READY_FOR_PICKUP",
                 "PICKED_UP",
                 "COMPLETED",
-                "ACCEPTED"
+                "ACCEPTED",
+                "DECLINED_BY_RESTAURANT"
+            ]
+        },
+        "TransportationModes": {
+            "name": "TransportationModes",
+            "values": [
+                "DRIVING",
+                "BICYCLING"
             ]
         }
     },
     "nonModels": {},
-    "version": "7e947a005f8708d4ce37f0b0f04fa096"
+    "codegenVersion": "3.4.1",
+    "version": "1e540161e405fc613d675905cadc140a"
 };

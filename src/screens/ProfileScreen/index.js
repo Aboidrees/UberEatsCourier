@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -8,12 +8,12 @@ import {
   Alert,
   Pressable,
 } from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Fontisto} from "@expo/vector-icons";
-import {Auth, DataStore} from "aws-amplify";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Fontisto } from "@expo/vector-icons";
+import { Auth, DataStore } from "aws-amplify";
 
-import {useAuthContext} from "../../context";
-import {Courier} from "../../models";
+import { useAuthContext } from "../../context";
+import { Courier } from "../../models";
 
 const TransportationModes = {
   DRIVING: "DRIVING",
@@ -21,22 +21,34 @@ const TransportationModes = {
 };
 
 export const ProfileScreen = () => {
-  const {sub, setDbCourier, dbCourier} = useAuthContext();
+  const { sub, setDbCourier, dbCourier } = useAuthContext();
   const [name, setName] = useState(dbCourier?.name || "");
-  const [transportationMode, setTransportationMode] = useState(
-    TransportationModes.DRIVING
-  );
+  const [transportationMode, setTransportationMode] = useState(TransportationModes.DRIVING);
 
-  const onSave = async () =>
-    dbCourier
-      ? (await updateCourier()) && Alert.alert("", "Updated")
-      : (await createCourier()) && Alert.alert("", "Saved");
+  const onSave = async () => {
+    if (dbCourier) {
+      await updateCourier();
+      Alert.alert("", "Updated");
+    } else {
+      await createCourier();
+      Alert.alert("", "Saved");
+
+    }
+  }
+
 
   const createCourier = async () => {
     try {
       const courier = await DataStore.save(
-        new Courier({name, sub, transportationMode})
+        new Courier({
+          name,
+          sub,
+          transportationMode,
+        })
       );
+
+
+      console.log(courier);
 
       setDbCourier(courier);
     } catch (e) {
@@ -72,7 +84,7 @@ export const ProfileScreen = () => {
             styles.accentColor,
           ]}
         >
-          <Fontisto name="car" size={60} color="white"/>
+          <Fontisto name="car" size={60} color="white" />
         </Pressable>
 
         <Pressable
@@ -83,7 +95,7 @@ export const ProfileScreen = () => {
             styles.accentColor,
           ]}
         >
-          <Fontisto name="motorcycle" size={60} color="white"/>
+          <Fontisto name="motorcycle" size={60} color="white" />
         </Pressable>
       </View>
 
@@ -95,7 +107,7 @@ export const ProfileScreen = () => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => Auth.signOut()} style={styles.button}>
-        <Text style={styles.buttonText}>Sign out</Text>
+        <Text style={styles.signOutButtonText}>Sign out</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -111,8 +123,11 @@ const styles = StyleSheet.create({
   input: {
     margin: 10,
     backgroundColor: "white",
-    padding: 15,
-    borderRadius: 5,
+    paddingVertical: 15,
+    padding: 20,
+    borderRadius: 50,
+    borderColor: "lightgrey",
+    borderWidth: 0.3,
   },
   transPContainer: {
     flexDirection: "row",
@@ -120,9 +135,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   transPButton: {
-    width: 100,
-    height: 100,
-    borderRadius: 15,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
     borderWidth: 2,
     borderColor: "white",
     justifyContent: "center",
@@ -132,11 +147,13 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     color: "white",
-    padding: 12,
+    padding: 15,
     margin: 10,
-    borderRadius: 5,
+    borderRadius: 50,
     backgroundColor: "lightgrey",
   },
-  accentColor: {backgroundColor: "#3FC060"},
-  buttonText: {fontSize: 17, color: "white"},
+
+  accentColor: { backgroundColor: "orange" },
+  buttonText: { fontSize: 17, color: "white" },
+  signOutButtonText: { fontSize: 17, color: "darkorange" },
 });
