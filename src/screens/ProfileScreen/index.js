@@ -22,8 +22,11 @@ const TransportationModes = {
 
 export const ProfileScreen = () => {
   const { sub, setDbCourier, dbCourier } = useAuthContext();
+
   const [name, setName] = useState(dbCourier?.name || "");
-  const [transportationMode, setTransportationMode] = useState(TransportationModes.DRIVING);
+  const [transportationMode, setTransportationMode] = useState(
+    TransportationModes.DRIVING
+  );
 
   const onSave = async () => {
     if (dbCourier) {
@@ -32,24 +35,15 @@ export const ProfileScreen = () => {
     } else {
       await createCourier();
       Alert.alert("", "Saved");
-
     }
-  }
-
+  };
 
   const createCourier = async () => {
     try {
       const courier = await DataStore.save(
-        new Courier({
-          name,
-          sub,
-          transportationMode,
-        })
+        new Courier({ name, sub, transportationMode })
       );
-
-
       console.log(courier);
-
       setDbCourier(courier);
     } catch (e) {
       Alert.alert("Error", e.message);
@@ -81,7 +75,7 @@ export const ProfileScreen = () => {
           style={[
             styles.transPButton,
             transportationMode === TransportationModes.DRIVING &&
-            styles.accentColor,
+              styles.accentColor,
           ]}
         >
           <Fontisto name="car" size={60} color="white" />
@@ -92,7 +86,7 @@ export const ProfileScreen = () => {
           style={[
             styles.transPButton,
             transportationMode === TransportationModes.BICYCLING &&
-            styles.accentColor,
+              styles.accentColor,
           ]}
         >
           <Fontisto name="motorcycle" size={60} color="white" />

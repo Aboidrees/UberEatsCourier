@@ -1,28 +1,26 @@
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-import { withAuthenticator } from "aws-amplify-react-native";
-import { StatusBar } from "expo-status-bar";
-import { Amplify } from "aws-amplify";
-import { Navigation } from "./src/navigation";
-import { AuthContextProvider, OrderContextProvider } from "./src/context";
-import awsconfig from "./src/aws-exports";
-import { LogBox } from 'react-native';
+import {Amplify} from "aws-amplify";
+import {StatusBar} from "expo-status-bar";
+import {NavigationContainer} from "@react-navigation/native";
+import {withAuthenticator} from "@aws-amplify/ui-react-native";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 
-LogBox.ignoreLogs(['Setting a timer']);
+import {AuthContextProvider, OrderContextProvider} from "./src/context";
+import AmplifyConfig from "./src/amplifyconfiguration.json";
+import {Navigation} from "./src/navigation";
 
-Amplify.configure({ ...awsconfig, Analytics: { disabled: true } });
+Amplify.configure(AmplifyConfig);
 
 const App = () => {
   return (
     <NavigationContainer>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureHandlerRootView style={{flex: 1}}>
         <AuthContextProvider>
           <OrderContextProvider>
-            <Navigation />
+            <Navigation/>
           </OrderContextProvider>
         </AuthContextProvider>
       </GestureHandlerRootView>
-      <StatusBar style="auto" />
+      <StatusBar style="auto"/>
     </NavigationContainer>
   );
 };
